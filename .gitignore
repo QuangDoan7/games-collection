@@ -38,6 +38,6 @@ coverage/
 # ===== TypeScript =====
 *.tsbuildinfo
 
-# ===== Android / iOS (if any) =====
+# ===== Android / iOS =====
 android/
 ios/
