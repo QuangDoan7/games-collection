@@ -1,5 +1,3 @@
-// StAuth10244: I, Thanh Quang Doan, 000955809 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else.
-
 // Import the necessary modules for the server
 const sqlite3 = require("sqlite3").verbose();
 const sqlite = require("sqlite");
@@ -68,6 +66,25 @@ app.delete("/api", async function (req, res) {
     // Delete all game data from the database and return a success message as a JSON response
     await db.run("DELETE FROM GamesCollection");
     res.json({ "status": "DELETE COLLECTION SUCCESSFUL" });
+})
+
+// The PUT request handler for updating all games in the collection.
+app.put("/api", async function (req, res) {
+    // Log the PUT request for updating all games in the collection to the console
+    console.log("PUT request to replace all games in the collection");
+
+    const newCollection = req.body; // Get the new collection of games from the request body
+
+    // Start a transaction to ensure that the collection is updated atomically
+    await db.run("DELETE FROM GamesCollection"); // Clear the existing collection
+
+    // Loop through the new collection of games and insert each game into the database
+    for (let game of newCollection) {
+        // Insert each game from the new collection into the database
+        await db.run("INSERT INTO GamesCollection (game, platform, releaseYear, genre, publisher) VALUES (?, ?, ?, ?, ?)", [game.game, game.platform, game.releaseYear, game.genre, game.publisher]);
+    }
+
+    res.json({ "status": "REPLACE COLLECTION SUCCESSFUL" }); // Return a success message as a JSON response
 })
 
 // The PUT request handler for updating a specific game by ID.

@@ -1,5 +1,3 @@
-// StAuth10244: I, Thanh Quang Doan, 000955809 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else.
-
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, ScrollView, Text, TextInput, View, useWindowDimensions} from "react-native";
 import { Cell, Row, Table, TableWrapper } from 'react-native-table-component';
@@ -290,7 +288,7 @@ export default function Index() {
         <ScrollView style={styles.body}>
             <View style={styles.headingContainer}>
                 <Image
-                    style={{ minWidth: useWindowDimensions().width * 0.4, maxHeight: useWindowDimensions().width * 0.2, resizeMode: "contain" }}
+                    style={{ maxHeight: useWindowDimensions().width * 0.15, resizeMode: "contain" }}
                     source={require("../assets/images/games_collection.png")}
                 />
             </View>
