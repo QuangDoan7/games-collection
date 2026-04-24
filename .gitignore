@@ -1,0 +1,43 @@
+# ===== Node =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# package-lock.json
+
+# ===== Env =====
+.env
+.env.*
+!.env.example
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== VSCode =====
+.vscode/
+
+# ===== Expo / React Native =====
+.expo/
+.expo-shared/
+web-build/
+dist/
+
+# Metro bundler cache
+.cache/
+npm-cache/
+
+# Logs
+logs/
+*.log
+
+# ===== Build output =====
+build/
+coverage/
+
+# ===== TypeScript =====
+*.tsbuildinfo
+
+# ===== Android / iOS (nếu có) =====
+android/
+ios/
