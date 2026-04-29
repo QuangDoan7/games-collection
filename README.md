@@ -1,11 +1,11 @@
 # Games Collection App
 
-A full-stack application that allows users to manage a collection of video games through a mobile interface, supporting full CRUD operations via a RESTful API.
+A full-stack application that allows users to manage a collection of video games, supporting full CRUD operations via a RESTful API.
 
 This project includes:
 
 - A RESTful API backend built with Express and SQLite
-- A React Native mobile application frontend
+- A React Native application frontend
 
 ---
 
@@ -41,7 +41,7 @@ https://youtu.be/DCXEKAMeKm8
 ## Architecture
 
 React Native App → REST API → SQLite Database
-The mobile application communicates with the backend API to perform data operations, which are then persisted in a SQLite database.
+The application communicates with the backend API to perform data operations, which are then persisted in a SQLite database.
 
 ---
 
@@ -76,6 +76,7 @@ cd frontend
 npm install
 npx expo start
 ```
+
 ---
 
 ## License
@@ -88,5 +89,5 @@ This project is licensed under the MIT License.
 
 - Designing and implementing RESTful APIs using Express
 - Managing relational data using SQLite
-- Integrating a mobile frontend with a backend API
+- Integrating the application frontend with a backend API
 - Structuring a full-stack application with clear separation of concerns
