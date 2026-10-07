@@ -1,0 +1,57 @@
+name: Games Collection API Regression Tests
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  api-tests:
+    name: Run API Regression Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Application Repository
+        uses: actions/checkout@v4
+
+      - name: Checkout QC Repository
+        uses: actions/checkout@v4
+        with:
+          repository: QuangDoan7/games-collection-qc
+          path: games-collection-qc
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Start Backend Server
+        working-directory: ./backend
+        run: |
+          node server.js > server.log 2>&1 &
+
+      - name: Wait for Backend Server
+        run: |
+          for i in {1..30}; do
+              if curl --silent --fail http://localhost:3001/api > /dev/null; then
+                  echo "Backend server is ready!"
+                  exit 0
+              fi
+              echo "Waiting for backend server..."
+              sleep 1
+          done
+          echo "Backend server failed to start within 30 seconds."
+          exit 1
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run API Regression Tests
+        run: |
+          newman run "./games-collection-qc/11-Automation/Games Collection API Tests.postman_collection.json" \
+            --env-var "baseUrl=http://localhost:3001"
