@@ -39,22 +39,13 @@ export default function Index() {
         // Check if the response from the backend is successful
         if (!response.ok) {
             console.error("Failed to retrieve a game");
+            setGames([]);
+            setFoundGame(false);
             return;
         }
 
         // If the response is successful, parse the JSON data
         const data = await response.json();
-
-        // Check if the data contains an error message
-        if (data.error) {
-            // If so, log the error message
-            console.error(data);
-
-            // Clear the games state and set foundGame to false to indicate that no game was found
-            setGames([]);
-            setFoundGame(false);
-            return; // Exit the function early since there is no game to display
-        }
 
         // If the data is valid, create a tableData array with the game information
         const tableData = [[
@@ -211,7 +202,11 @@ export default function Index() {
         setEditingGameId(gameId);
         onChangeGameName(games[gameId][1]);
         onChangeGamePlatform(games[gameId][2]);
-        onChangeGameReleaseYear(games[gameId][3].toString());
+        if (games[gameId][3] == undefined || games[gameId][3] == null) {
+            onChangeGameReleaseYear("");
+        } else {
+            onChangeGameReleaseYear(games[gameId][3].toString());
+        }
         onChangeGameGenre(games[gameId][4]);
         onChangeGamePublisher(games[gameId][5]);
     }
@@ -281,6 +276,15 @@ export default function Index() {
         // Parse the JSON data from the response and log it to the console
         const data = await response.json();
         console.log(data);
+
+        // Reset the states related to editing mode and clear the input fields
+        setEditingGame(false);
+        setEditingGameId(-1);
+        onChangeGameName("");
+        onChangeGamePlatform("");
+        onChangeGameReleaseYear("");
+        onChangeGameGenre("");
+        onChangeGamePublisher("");
     }
 
     return (

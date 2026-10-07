@@ -20,17 +20,29 @@ app.get("/api/:id", async function (req, res) {
     // Extract the ID parameter from the request URL
     const id = req.params.id;
 
+    // Check if the ID is a valid number
+    if (id == undefined || id == null || id.trim() === "" || Number.isNaN(Number(id))) {
+        res.status(404).json({ "error": "Game not found. ID must be numeric and greater than 0!" });
+        return;
+    }
+
+    // Check if the ID is greater than 0
+    if (Number(id) < 1) {
+        res.status(404).json({ "error": "Game not found. ID must be greater than 0!" });
+        return;
+    }
+
     // Get the game data from the database using the ID
     const data = await db.get("SELECT rowid as id, * FROM GamesCollection WHERE rowid = ?", [id]);
-    
-    // if no game data is found for the provided ID, return a 404 error response
-    if (!data) {
-        res.json({ "error": "Game not found" });
+
+    // Check if the game data exists for the provided ID
+    if (!data) { 
+        res.status(404).json({ "error": "Game not found." });
         return;
     }
 
     // If game data is found, return the data as a JSON response
-    res.json(data);
+    res.status(200).json(data);
 });
 
 // The GET request handler for retrieving all games in the collection.
@@ -40,7 +52,7 @@ app.get("/api", async function (req, res) {
 
     // Get all game data from the database and return it as a JSON response
     const data = await db.all("SELECT rowid as id, * FROM GamesCollection");
-    res.json(data);
+    res.status(200).json(data);
 });
 
 // The POST request handler for inserting a new game into the collection.
@@ -51,11 +63,23 @@ app.post("/api", async function (req, res) {
     // Extract the game information from the request body
     const { game, platform, releaseYear, genre, publisher } = req.body;
 
+    // Check if the game name is provided and not empty
+    if (game == undefined || game == null || game.trim() === "") {
+        res.status(400).json({ "error": "Game name is required and cannot be empty." });
+        return;
+    }
+
+    // Check if the release year is numeric and greater than 0
+    if (Number.isNaN(Number(releaseYear)) || releaseYear < 0) {
+        res.status(400).json({ "error": "Release year must be a valid number and greater than 0." });
+        return;
+    }
+
     // Insert the new game data into the database
     await db.run("INSERT INTO GamesCollection (game, platform, releaseYear, genre, publisher) VALUES (?, ?, ?, ?, ?)", [game, platform, releaseYear, genre, publisher]);
 
     // Return a success message as a JSON response
-    res.json({ "status": "CREATE ENTRY SUCCESSFUL" });
+    res.status(201).json({ "status": "CREATE ENTRY SUCCESSFULLY" });
 });
 
 // The DELETE request handler for deleting all games in the collection.
@@ -65,27 +89,8 @@ app.delete("/api", async function (req, res) {
 
     // Delete all game data from the database and return a success message as a JSON response
     await db.run("DELETE FROM GamesCollection");
-    res.json({ "status": "DELETE COLLECTION SUCCESSFUL" });
-})
-
-// The PUT request handler for updating all games in the collection.
-app.put("/api", async function (req, res) {
-    // Log the PUT request for updating all games in the collection to the console
-    console.log("PUT request to replace all games in the collection");
-
-    const newCollection = req.body; // Get the new collection of games from the request body
-
-    // Start a transaction to ensure that the collection is updated atomically
-    await db.run("DELETE FROM GamesCollection"); // Clear the existing collection
-
-    // Loop through the new collection of games and insert each game into the database
-    for (let game of newCollection) {
-        // Insert each game from the new collection into the database
-        await db.run("INSERT INTO GamesCollection (game, platform, releaseYear, genre, publisher) VALUES (?, ?, ?, ?, ?)", [game.game, game.platform, game.releaseYear, game.genre, game.publisher]);
-    }
-
-    res.json({ "status": "REPLACE COLLECTION SUCCESSFUL" }); // Return a success message as a JSON response
-})
+    res.status(200).json({ "status": "DELETE COLLECTION SUCCESSFULLY" });
+});
 
 // The PUT request handler for updating a specific game by ID.
 app.put("/api/:id", async function (req, res) {
@@ -95,15 +100,36 @@ app.put("/api/:id", async function (req, res) {
     // Extract the ID parameter from the request
     const id = req.params.id;
 
+    // Check if the game ID is existing and valid
+    if (id == undefined || id == null || id.trim() === "" || Number.isNaN(Number(id)) || id < 1) {
+        res.status(404).json({ "error": "Game not found. ID must be numeric and greater than 0!" });
+        return;
+    }
+
     // Extract the updated game information from the request body
     const { game, platform, releaseYear, genre, publisher } = req.body;
+
+    // Check if the release year is numeric and greater than 0
+    if (Number.isNaN(Number(releaseYear)) || releaseYear < 0) {
+        res.status(400).json({ "error": "Release year must be a valid number and greater than 0." });
+        return;
+    }
+
+    // Get the game data from the database using the ID
+    const data = await db.get("SELECT rowid as id, * FROM GamesCollection WHERE rowid = ?", [id]);
+
+    // Check if the game data exists for the provided ID
+    if (!data) { 
+        res.status(404).json({ "error": "Game not found with provided ID." });
+        return;
+    }
 
     // Update the game data in the database for the specified ID
     await db.run("UPDATE GamesCollection SET game = ?, platform = ?, releaseYear = ?, genre = ?, publisher = ? WHERE rowid = ?", [game, platform, releaseYear, genre, publisher, id]);
 
     // Return a success message as a JSON response
-    res.json({ "status": "UPDATE ITEM SUCCESSFUL" });
-})
+    res.status(200).json({ "status": "UPDATE ITEM SUCCESSFULLY" });
+});
 
 // The DELETE request handler for deleting a specific game by ID.
 app.delete("/api/:id", async function (req, res) {
@@ -113,10 +139,25 @@ app.delete("/api/:id", async function (req, res) {
     // Extract the ID parameter from the request
     const id = req.params.id;
 
+    // Check if the game ID is existing and valid
+    if (id == undefined || id == null || id.trim() === "" || Number.isNaN(Number(id)) || id < 1) {
+        res.status(404).json({ "error": "Game not found. ID must be numeric and greater than 0!" });
+        return;
+    }
+
+    // Get the game data from the database using the ID
+    const data = await db.get("SELECT rowid as id, * FROM GamesCollection WHERE rowid = ?", [id]);
+
+    // Check if the game data exists for the provided ID
+    if (!data) { 
+        res.status(404).json({ "error": "Game not found with provided ID." });
+        return;
+    }
+
     // Delete the game data from the database for the specified ID and return a success message as a JSON response
     await db.run("DELETE FROM GamesCollection WHERE rowid = ?", [id]);
-    res.json({ "status": "DELETE ITEM SUCCESSFUL" });
-})
+    res.status(200).json({ "status": "DELETE ITEM SUCCESSFULLY" });
+});
 
 // The startup function initializes the database connection
 async function startup() {
