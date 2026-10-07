@@ -1,5 +1,7 @@
 # Games Collection App
 
+[![Games Collection API Regression Tests](https://github.com/QuangDoan7/games-collection/actions/workflows/api-tests.yml/badge.svg)](https://github.com/QuangDoan7/games-collection/actions/workflows/api-tests.yml)
+
 A full-stack application that allows users to manage a collection of video games, supporting full CRUD operations via a RESTful API.
 
 This project includes:
